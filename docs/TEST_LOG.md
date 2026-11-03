@@ -335,18 +335,37 @@ not merely trust the client. **Row count must be confirmed unchanged.**
 | Unauthenticated `POST /rest/v1/contact_submissions` | 401 |
 | Secrets in the published bundle | none found |
 
-**Incomplete:** these were sent with no key at all, so they prove the endpoint
-refuses anonymous callers but not that RLS denies a caller holding the
-publishable/anon key. Run the anon-key probe in T5 above to finish this.
+Repeated holding a real publishable key (`sb_publishable_...`), which is the
+key a browser would carry:
+
+| Operation | Result |
+|---|---|
+| `SELECT` | 401, `42501 permission denied for table contact_submissions` |
+| `INSERT` | 401, `42501 permission denied` |
+| `UPDATE` | 401 |
+| `DELETE` | 401 |
+
+PostgREST's own hint confirms the cause: it suggests granting privileges to
+`anon`, which is precisely what the migration revokes. RLS is enabled with
+zero policies and the role has no table grants, so all four verbs are refused
+before any row is touched.
 
 ### T7 part 1 — one request_id, three times
 
-All three attempts returned `{"status":"received"}`. **The row count is the
-actual proof and must be confirmed in the database.**
+All three attempts returned `{"status":"received"}`, and the database confirms
+a single row:
+
+```
+t7_duplicate_rows = 1    total_rows = 3    policy_count = 0    rls_enabled = true
+```
+
+`total_rows = 3` accounts for exactly the three successful submissions made
+during setup (the Windmill UI test, the live chain check, and this one). The
+ten invalid submissions in T4 created **zero** rows, which is T4's row-count
+requirement met.
 
 ### What this run does NOT establish
 
-- Row counts, in either T4 or T7 — the script cannot see the database
 - T3, which requires a human typing into the live form; an API call is
   explicitly not a substitute
 - T7 part 2, the outage and retry behaviour
