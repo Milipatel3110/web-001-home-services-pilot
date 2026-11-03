@@ -53,7 +53,7 @@ in the code needs editing if you choose a different name.
 
 ---
 
-## 2. Supabase — database
+## 2. Supabase, database
 
 1. Create a new Supabase project. Note the **project ref** (value **A**), the
    subdomain in `https://<ref>.supabase.co`.
@@ -90,7 +90,7 @@ in the code needs editing if you choose a different name.
 
 ---
 
-## 3. Windmill — the flow
+## 3. Windmill, the flow
 
 1. Create a workspace. Note the workspace id.
 2. **Resources → + Resource → supabase**, path exactly `f/web001/supabase_admin`:
@@ -126,12 +126,12 @@ in the code needs editing if you choose a different name.
    ```
 
    The `/f/` is Windmill's marker for "this is a flow" (`/p/` means a script).
-   It is **not** a folder, so the flow's own path follows it in full — a flow
+   It is **not** a folder, so the flow's own path follows it in full, a flow
    at `u/mili/contact_intake` gives `.../run_wait_result/f/u/mili/contact_intake`.
 
    Easiest way to get it right: deploy the flow, open its **Triggers** node and
    copy the webhook URL Windmill shows. Then check it says `run_wait_result`
-   and not `run` — Windmill offers both, and they are one word apart.
+   and not `run`, Windmill offers both, and they are one word apart.
 
    `run_wait_result` is what makes the call synchronous: it returns the flow's
    result rather than a job id. An asynchronous endpoint would let the Edge
@@ -142,7 +142,7 @@ in the code needs editing if you choose a different name.
 
 ---
 
-## 4. Supabase — Edge Function
+## 4. Supabase, Edge Function
 
 1. Work out your published origin. For a project site it is the **origin
    only**, no repository path:
@@ -189,7 +189,7 @@ in the code needs editing if you choose a different name.
 
 ---
 
-## 5. GitHub — Actions and Pages
+## 5. GitHub, Actions and Pages
 
 ### The quick way
 
@@ -275,4 +275,4 @@ npm run dev
 The dev server runs at `/`, not under the repository sub-path; that difference
 is handled at build time and needs no local change. Submitting from
 `localhost` will be refused by CORS unless you temporarily add that origin to
-`ALLOWED_ORIGIN` — the validation itself works regardless.
+`ALLOWED_ORIGIN`, the validation itself works regardless.

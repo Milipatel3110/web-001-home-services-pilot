@@ -1,5 +1,5 @@
 /**
- * WEB-001 — public contact intake Edge Function.
+ * WEB-001, public contact intake Edge Function.
  *
  * Request chain (SOW 5.1), and nothing else is permitted:
  *
@@ -27,7 +27,7 @@
  */
 
 // ---------------------------------------------------------------------------
-// Limits — authoritative copy. The browser copy in src/lib/validation.ts is a
+// Limits, authoritative copy. The browser copy in src/lib/validation.ts is a
 // convenience only; these are the numbers that decide what is stored.
 // ---------------------------------------------------------------------------
 const LIMITS = {
@@ -53,9 +53,9 @@ const WINDMILL_TIMEOUT_MS = Number(Deno.env.get('WINDMILL_TIMEOUT_MS') ?? '20000
 function corsHeaders(_origin: string | null): Record<string, string> {
   // One fixed origin: the published GitHub Pages site. A page on any other
   // origin gets no CORS grant and its browser refuses to read the response.
-  // This is a browser convention, not a gate — a request from curl with a
-  // forged Origin header still reaches the validation below and is judged
-  // purely on its contents.
+  // This is a browser convention rather than a gate. A request from curl
+  // with a forged Origin header still reaches the validation below and is
+  // judged purely on its contents.
   return {
     'Access-Control-Allow-Origin': ALLOWED_ORIGIN || 'null',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',

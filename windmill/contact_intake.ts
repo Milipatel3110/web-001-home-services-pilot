@@ -1,5 +1,5 @@
 /**
- * Windmill flow step — contact_intake / store_submission
+ * Windmill flow step for contact_intake.
  *
  * The single step of the synchronous `contact_intake` flow (SOW 5.2).
  * Triggered ONLY by the Supabase Edge Function, which authenticates with a

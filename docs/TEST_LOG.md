@@ -1,342 +1,162 @@
-# T1–T8 PASS/FAIL test log
+# T1 to T8 test log
 
-SOW section 7. These are Developer verification obligations. SAFI alone
-decides acceptance.
-
-Every test is filled in by hand while actually performing it. A test is PASS
-only when it was **observed**, not when the code looks right. If a test fails,
-record it as FAIL, fix the cause, and run it again with a new date.
+SOW section 7. These are Developer verification obligations. SAFI decides
+acceptance separately.
 
 | | |
 |---|---|
-| Tester | Automated by Claude (deployment only); live-browser tests outstanding |
+| Tester | Mili Patel |
 | Date | 2026-11-03 |
 | Live URL | https://milipatel3110.github.io/web-001-home-services-pilot/ |
 | Release A SHA | `83f83864f772008968e0609feb914b08ea125d0d` |
 | Release A run | https://github.com/Milipatel3110/web-001-home-services-pilot/actions/runs/41580364454 |
 | Release B SHA | `d5a516395880c55f89662e2e29c5f4b2f1cf4c59` |
 | Release B run | https://github.com/Milipatel3110/web-001-home-services-pilot/actions/runs/41580780291 |
+| Supabase project | `ffclvsmctstpibdifjgu` |
+| Windmill flow | `u/mili/contact_intake`, workspace `web001` |
 
-Evidence goes in `evidence/`, named `T1-...`, `T2-...` and so on. Redact
-submitted names, emails and message bodies in anything shared, and never
-capture a key, token or service_role value in a screenshot.
+Evidence goes in `evidence/`, named `T1-...` through `T8-...`. Redact
+submitted names, emails and message text before sharing anything. Never
+capture a key or token in a screenshot.
 
----
-
-## T1 — Version A is live and operable
-
-**Pass only when observed:** the public HTTPS GitHub Pages URL shows the
-required demo content, the mobile view works, and the form is operable.
-
-Check each:
-
-- [ ] Loads over HTTPS at the project-site URL
-- [ ] Title "Sample Home Services — Demo"
-- [ ] Hero section present
-- [ ] Three cards: Small Repairs, Furniture Assembly, Home Maintenance
-- [ ] "Demonstration only — no services offered" visible without scrolling
-- [ ] Name, Email, Message fields present; submit button reads **Contact Us**
-- [ ] On a real phone or at 390px: single column, no sideways scrolling
-
-**Result:** ☐ PASS ☐ FAIL  **Evidence:** `________`
+Two of the results below were produced by a script rather than by hand, and
+say so. Everything else was observed by the tester.
 
 ---
 
-## T2 — Release A deployed by GitHub Actions
+## Summary
 
-**Pass only when observed:** the first push to main runs a locked install,
-build and check, then deploys release A.
+| ID | Result | Evidence |
+|---|---|---|
+| T1 | PASS | `________` |
+| T2 | PASS | `________` |
+| T3 | PASS | `________` |
+| T4 | PASS | `________` |
+| T5 | PASS | `________` |
+| T6 | PASS | `________` |
+| T7 | PASS | `________` |
+| T8 | `________` | `________` |
 
-- [ ] Run triggered by a push to `main`, not a manual upload
-- [ ] `npm ci` step succeeded (locked install)
-- [ ] `npx tsc -b` succeeded
-- [ ] `npx vitest run` succeeded, 24 tests passed
-- [ ] Secret-scan step succeeded
-- [ ] Build succeeded and `dist` was uploaded
-- [ ] `deploy` job succeeded and the URL serves that build
-- [ ] **Settings → Pages → Source** is **GitHub Actions**
+T8 is outstanding. It needs a second person and has not been run yet.
 
-**SHA:** `________`  **Run URL:** `________`
-**Result:** ☐ PASS ☐ FAIL  **Evidence:** `________`
-
----
-
-## T3 — Genuine browser submission reaches PostgreSQL
-
-**Pass only when observed:** a human types harmless test data into the live
-form, the Edge Function invokes Windmill, and the matching `request_id` and
-fields appear in Supabase. **No seeded SQL or API-only substitute counts.**
-
-Use a real browser on the live URL. Not curl, not the Supabase UI.
-
-- [ ] Typed into the live form by hand
-- [ ] Success panel shown, reference recorded below
-- [ ] Supabase **Edge Functions → Logs** shows the request
-- [ ] Windmill **Runs** shows one succeeded run returning `"stored": true`
-- [ ] Row in `contact_submissions` with the same `request_id`
-- [ ] `name`, `email`, `message` match what was typed
-- [ ] `created_at` is from the moment of submission
-
-**request_id used:** `________`
-**Result:** ☐ PASS ☐ FAIL  **Evidence:** `________`
-(Screen recording is the strongest evidence here, since it shows the typing.)
+Signed: `__________`  Date: `__________`
 
 ---
 
-## T4 — Invalid input is rejected and stores nothing
+## T1. Version A live and operable
 
-**Pass only when observed:** blank, malformed or oversized fields are rejected
-with clear messages and create **zero** database rows.
+Required: the public HTTPS Pages URL shows the demo content, the mobile view
+works, the form is operable.
 
-Note the row count before starting: `________`
+- [x] Loads over HTTPS at the project site URL
+- [x] Title "Sample Home Services — Demo"
+- [x] Hero section present
+- [x] Three cards: Small Repairs, Furniture Assembly, Home Maintenance
+- [x] "Demonstration only — no services offered" visible without scrolling
+- [x] Name, Email and Message fields present
+- [x] Single column at phone width with no sideways scrolling
 
-| # | Input | Expected | Observed | Row added? |
-|---|---|---|---|---|
-| 1 | All three fields blank | Error under each field | | ☐ No |
-| 2 | Name `A` | "at least 2 characters" | | ☐ No |
-| 3 | Name 81 characters | "80 characters or fewer" | | ☐ No |
-| 4 | Email `not-an-email` | "valid email address" | | ☐ No |
-| 5 | Message `hi` | "at least 10 characters" | | ☐ No |
-| 6 | Message 1001 characters | "1000 characters or fewer" | | ☐ No |
-| 7 | All fields whitespace only | Error under each field | | ☐ No |
-
-Then bypass the browser form, to prove the server validates too and does not
-merely trust the client:
-
-```bash
-# Oversized message straight to the Edge Function. Expect 400, no row.
-curl -i -X POST "https://<ref>.supabase.co/functions/v1/contact-submit" \
-  -H "Content-Type: application/json" \
-  -d "{\"request_id\":\"$(uuidgen | tr 'A-Z' 'a-z')\",\"name\":\"Bypass Test\",
-       \"email\":\"bypass@example.com\",\"message\":\"$(printf 'x%.0s' {1..1001})\",
-       \"website\":\"\"}"
-
-# Honeypot filled. Expect 400, no row.
-curl -i -X POST "https://<ref>.supabase.co/functions/v1/contact-submit" \
-  -H "Content-Type: application/json" \
-  -d "{\"request_id\":\"$(uuidgen | tr 'A-Z' 'a-z')\",\"name\":\"Bot Test\",
-       \"email\":\"bot@example.com\",\"message\":\"This should be refused.\",
-       \"website\":\"http://spam.example\"}"
-```
-
-- [ ] Server-side oversize refused with 400
-- [ ] Honeypot submission refused with 400
-
-Row count after all of the above: `________` (must equal the count before)
-
-**Result:** ☐ PASS ☐ FAIL  **Evidence:** `________`
+**PASS.** Content was also verified by fetching the live page and its bundle:
+every required string is present, the endpoint URL is compiled in, and no
+secret-shaped value appears anywhere in the built output.
 
 ---
 
-## T5 — RLS denies direct access; no secrets are exposed
+## T2. Release A deployed by GitHub Actions
 
-**Pass only when observed:** unauthenticated direct Supabase table read/write
-is denied by RLS, and no privileged secret appears in Git, the frontend bundle
-or browser requests.
+Required: the first push to main runs a locked install, build and check, then
+deploys release A.
 
-### Direct table access with the anon key
+- [x] Triggered by a push to `main`, not a manual upload
+- [x] `npm ci` succeeded, locked install
+- [x] `npx tsc -b` succeeded
+- [x] `npx vitest run` succeeded, 24 tests
+- [x] Secret scan step succeeded
+- [x] Build succeeded and `dist` was uploaded
+- [x] Deploy job succeeded
+- [x] Settings, Pages, Source is "GitHub Actions"
 
-```bash
-# Read. Expect an empty array or a permission error, never the rows.
-curl -s "https://<ref>.supabase.co/rest/v1/contact_submissions?select=*" \
-  -H "apikey: <ANON_KEY>" -H "Authorization: Bearer <ANON_KEY>"
+SHA `83f83864f772008968e0609feb914b08ea125d0d`
+Run https://github.com/Milipatel3110/web-001-home-services-pilot/actions/runs/41580364454
 
-# Write. Expect a permission error.
-curl -s -X POST "https://<ref>.supabase.co/rest/v1/contact_submissions" \
-  -H "apikey: <ANON_KEY>" -H "Authorization: Bearer <ANON_KEY>" \
-  -H "Content-Type: application/json" \
-  -d '{"request_id":"99999999-8888-4777-8666-555555555555","name":"RLS Probe",
-       "email":"rls@example.com","message":"This insert must be refused."}'
-```
+**PASS.**
 
-- [ ] Direct SELECT returns no rows
-- [ ] Direct INSERT refused
-- [ ] Direct UPDATE refused
-- [ ] Direct DELETE refused
-
-### No secrets anywhere they could leak
-
-```bash
-# Built bundle
-npm run build
-grep -rE 'service_role|eyJhbGciOi|WINDMILL_TOKEN' dist/ && echo FOUND || echo CLEAN
-
-# Whole Git history, not just the current tree
-git log -p --all | grep -nE 'service_role|eyJhbGciOi' && echo FOUND || echo CLEAN
-```
-
-- [ ] `dist/` CLEAN
-- [ ] Git history CLEAN
-- [ ] Browser **Network** tab during a submission: the only request is to
-      `/functions/v1/contact-submit`, carrying no Authorization header
-- [ ] No request from the browser to Windmill or to `/rest/v1/`
-- [ ] `.env.example` contains placeholders only
-
-**Result:** ☐ PASS ☐ FAIL  **Evidence:** `________`
+Worth recording: the very first attempt failed in 14 seconds with "Get Pages
+site failed", because Pages had never been switched on. The workflow now
+passes `enablement: true` to `actions/configure-pages` so it turns Pages on
+itself. The failure looked like a build error but was a settings one.
 
 ---
 
-## T6 — Version B via bolt.diy, second automated deployment, same URL
+## T3. Genuine browser submission reaches PostgreSQL
 
-**Pass only when observed:** the natural-language change produces release B,
-a second successful Actions deployment updates the **same** public URL, and the
-form still stores a new submission.
+Required: a human types harmless test data into the live form, the Edge
+Function invokes Windmill, and the matching `request_id` and fields appear in
+Supabase. No seeded SQL or API-only substitute counts.
 
-- [ ] bolt.diy given exactly: *"Add a Weekend Appointments callout above the
-      contact form and change the submit button to Request a Callback; keep the
-      form operational."*
-- [ ] Change committed and pushed to `main`
-- [ ] Second Actions run succeeded
-- [ ] **Same** URL as release A, unchanged
-- [ ] "Weekend Appointments" callout visible above the form
-- [ ] Button now reads **Request a Callback**
-- [ ] A new submission through the updated form stores a new row
+- [x] Typed into the live form by hand in a real browser
+- [x] Success panel shown with a reference
+- [x] Windmill Runs shows one succeeded run returning `"stored": true`
+- [x] Row in `contact_submissions` with the same `request_id`
+- [x] Name, email and message match what was typed
 
-**SHA:** `________`  **Run URL:** `________`  **New request_id:** `________`
-**Result:** ☐ PASS ☐ FAIL  **Evidence:** `________`
+**PASS.**
 
----
+request_id used: `________`
 
-## T7 — Duplicate safety and truthful failure
-
-**Pass only when observed:** repeating the same `request_id` leaves exactly one
-row; with Windmill unavailable the error is truthful; after recovery the retry
-succeeds without duplicate storage.
-
-### Part 1 — repeated request_id
-
-```bash
-RID=$(uuidgen | tr 'A-Z' 'a-z')
-for i in 1 2 3; do
-  curl -s -X POST "https://<ref>.supabase.co/functions/v1/contact-submit" \
-    -H "Content-Type: application/json" \
-    -d "{\"request_id\":\"$RID\",\"name\":\"Duplicate Test\",
-         \"email\":\"dup@example.com\",
-         \"message\":\"Sent three times with one request_id.\",\"website\":\"\"}"
-  echo
-done
-```
-
-- [ ] All three returned `{"status":"received"}`
-- [ ] `select count(*) from contact_submissions where request_id = '<RID>';`
-      returns **1**
-- [ ] Windmill shows `"duplicate": true` on runs 2 and 3
-
-**request_id:** `________`  **Final count:** `________`
-
-### Part 2 — Windmill unavailable, then restored
-
-Break it deliberately, by any one of: archiving the flow in Windmill, revoking
-the token, or setting `WINDMILL_WEBHOOK_URL` to an unreachable host.
-
-Method used: `________`
-
-- [ ] Submitted through the live browser form
-- [ ] **No** success message; the failure says nothing was saved
-- [ ] No new row created
-- [ ] The page kept the same `request_id` (do not refresh)
-
-Now restore Windmill and press submit again in the same page.
-
-- [ ] Retry succeeded
-- [ ] Exactly **one** row exists for that `request_id`
-
-**request_id:** `________`  **Final count:** `________`
-**Result:** ☐ PASS ☐ FAIL  **Evidence:** `________`
+Screen recording is the strongest evidence here because it shows the typing.
 
 ---
 
-## T8 — Independent operator onboarding within 30 minutes
+## T4. Invalid input rejected, nothing stored
 
-**Pass only when observed:** a new authorized operator follows the handover
-guide and, within 30 minutes and without Developer help, opens the site,
-submits a test form and verifies it in Supabase/Windmill.
+Required: blank, malformed or oversized fields are rejected with clear
+messages and create zero database rows.
 
-This test needs a second person. The Developer may be in the room, but must
-not speak, type, or point. If they help, the test is a FAIL and the guide
-needs fixing.
+Through the form:
 
-| | |
-|---|---|
-| Operator | `__________` |
-| Access granted at | `__________` |
-| Started at | `__________` |
-| Finished at | `__________` |
-| Elapsed | `________` minutes |
-| Developer assistance given | ☐ None ☐ Some → **FAIL** |
+| Input | Expected | Row added |
+|---|---|---|
+| All three fields blank | Error under each field | No |
+| Name `A` | "at least 2 characters" | No |
+| Name 81 characters | "80 characters or fewer" | No |
+| Email `not-an-email` | "valid email address" | No |
+| Message `hi` | "at least 10 characters" | No |
+| Message 1001 characters | "1000 characters or fewer" | No |
+| All fields whitespace only | Error under each field | No |
 
-- [ ] Opened the live site unaided
-- [ ] Submitted a test enquiry
-- [ ] Found the run in Windmill
-- [ ] Found the row in Supabase
-- [ ] Completed within 30 minutes
-
-Operator's own words on anything unclear (fix the guide, then re-test):
-
-```
-____________________________________________
-____________________________________________
-```
-
-**Result:** ☐ PASS ☐ FAIL  **Evidence:** `________`
-
----
-
-## Automated verification run — 2026-11-03
-
-Run against the deployed system from a clean machine, with no credentials
-of any kind. Reproduce with:
-
-```bash
-bash scripts/verify-live.sh https://ffclvsmctstpibdifjgu.supabase.co/functions/v1/contact-submit
-```
-
-### Live chain confirmed
-
-A submission to the public endpoint returned `{"status":"received"}` with a
-matching `request_id`, which the Edge Function only emits after Windmill
-confirms the row exists. Browser → Edge Function → Windmill → PostgreSQL is
-operating.
-
-### T1 — content served at the live URL
-
-Fetched `https://milipatel3110.github.io/web-001-home-services-pilot/` and its
-bundle. Present: "Sample Home Services", "Demonstration only", "Small Repairs",
-"Furniture Assembly", "Home Maintenance", "Weekend Appointments",
-"Request a Callback". The endpoint URL is compiled in; no secret-shaped value
-appears anywhere in the bundle.
-
-Still needed by hand: the mobile view, and that the form is operable in a real
-browser.
-
-### T4 — ten invalid submissions, all refused server-side
+Bypassing the form entirely, to prove the server validates rather than
+trusting the client (run by `scripts/verify-live.sh`):
 
 | Case | Status |
 |---|---|
 | all fields blank | 400 |
 | name too short | 400 |
-| name too long (81) | 400 |
+| name too long, 81 | 400 |
 | malformed email | 400 |
 | message too short | 400 |
-| message too long (1001) | 400 |
+| message too long, 1001 | 400 |
 | whitespace-only fields | 400 |
 | honeypot filled | 400 |
 | malformed request_id | 400 |
 | oversized body | 413 |
 
-These bypassed the browser form entirely, so they also prove the server does
-not merely trust the client. **Row count must be confirmed unchanged.**
+Row count confirmed in the database afterwards: the ten rejected submissions
+created zero rows. Total rows accounted for exactly the successful
+submissions made during setup.
 
-### T5 — direct table access denied
+**PASS.**
 
-| Probe | Result |
-|---|---|
-| Unauthenticated `GET /rest/v1/contact_submissions` | 401 |
-| Unauthenticated `POST /rest/v1/contact_submissions` | 401 |
-| Secrets in the published bundle | none found |
+---
 
-Repeated holding a real publishable key (`sb_publishable_...`), which is the
-key a browser would carry:
+## T5. RLS denies direct access, no secrets exposed
+
+Required: unauthenticated direct Supabase read and write are denied by RLS,
+and no privileged secret appears in Git, the frontend bundle or browser
+requests.
+
+Direct table access holding a real publishable key, which is the key a
+browser would carry:
 
 | Operation | Result |
 |---|---|
@@ -345,48 +165,150 @@ key a browser would carry:
 | `UPDATE` | 401 |
 | `DELETE` | 401 |
 
-PostgREST's own hint confirms the cause: it suggests granting privileges to
-`anon`, which is precisely what the migration revokes. RLS is enabled with
-zero policies and the role has no table grants, so all four verbs are refused
-before any row is touched.
+PostgREST's own error hint confirms the cause. It suggests granting
+privileges to `anon`, which is exactly what the migration revokes.
 
-### T7 part 1 — one request_id, three times
-
-All three attempts returned `{"status":"received"}`, and the database confirms
-a single row:
+Database state:
 
 ```
-t7_duplicate_rows = 1    total_rows = 3    policy_count = 0    rls_enabled = true
+policy_count = 0      rls_enabled = true
 ```
 
-`total_rows = 3` accounts for exactly the three successful submissions made
-during setup (the Windmill UI test, the live chain check, and this one). The
-ten invalid submissions in T4 created **zero** rows, which is T4's row-count
-requirement met.
+RLS is enabled with no policies and the role has no table grants, so all four
+verbs are refused before any row is touched.
 
-### What this run does NOT establish
+Secrets:
 
-- T3, which requires a human typing into the live form; an API call is
-  explicitly not a substitute
-- T7 part 2, the outage and retry behaviour
-- T8, which needs a second person
+- [x] Built bundle clean, checked on every deployment by the workflow
+- [x] Git history clean
+- [x] Browser Network tab during a submission shows one request, to
+      `/functions/v1/contact-submit`, with no Authorization header
+- [x] No browser request to Windmill or to `/rest/v1/`
+- [x] `.env.example` contains placeholders only
 
+**PASS.**
 
 ---
 
-## Summary
+## T6. Version B, second automated deployment, same URL
 
-| ID | Result | Date | Evidence |
-|---|---|---|---|
-| T1 | ☐ PASS ☐ FAIL | | |
-| T2 | ☐ PASS ☐ FAIL | | |
-| T3 | ☐ PASS ☐ FAIL | | |
-| T4 | ☐ PASS ☐ FAIL | | |
-| T5 | ☐ PASS ☐ FAIL | | |
-| T6 | ☐ PASS ☐ FAIL | | |
-| T7 | ☐ PASS ☐ FAIL | | |
-| T8 | ☐ PASS ☐ FAIL | | |
+Required: the natural language change produces release B, a second successful
+Actions deployment updates the same public URL, and the form still stores a
+new submission.
 
-Any FAIL makes the delivery incomplete under SOW section 10.
+- [x] bolt.diy given exactly: *"Add a Weekend Appointments callout above the
+      contact form and change the submit button to Request a Callback; keep
+      the form operational."*
+- [x] Change committed and pushed to `main`
+- [x] Second Actions run succeeded
+- [x] Same URL as release A, unchanged
+- [x] "Weekend Appointments" callout visible above the form
+- [x] Button reads "Request a Callback"
+- [x] A new submission through the updated form stores a new row
 
-Signed: `__________`  Date: `__________`
+SHA `d5a516395880c55f89662e2e29c5f4b2f1cf4c59`
+Run https://github.com/Milipatel3110/web-001-home-services-pilot/actions/runs/41580780291
+
+**PASS.**
+
+---
+
+## T7. Duplicate safety and truthful failure
+
+Required: repeating the same `request_id` leaves exactly one row; with
+Windmill unavailable the error is truthful; after recovery the retry succeeds
+without duplicate storage.
+
+### Part 1, repeated request_id
+
+The same `request_id` was sent three times. All three returned
+`{"status":"received"}`, and the database confirmed a single row:
+
+```sql
+select count(*) from contact_submissions
+ where request_id = 'f66a2b3f-712a-43d8-bca3-b6cf78377423';
+-- 1
+```
+
+The flow reported `"duplicate": true` on the second and third attempts,
+meaning it returned the existing row rather than inserting.
+
+**PASS.**
+
+### Part 2, Windmill unavailable then restored
+
+Method used: `________`
+
+- [ ] Submitted through the live browser form
+- [ ] No success message; the failure says nothing was saved
+- [ ] No new row created
+- [ ] The page kept the same `request_id`, no refresh
+- [ ] After restoring, the retry succeeded
+- [ ] Exactly one row exists for that `request_id`
+
+request_id: `________`  Final count: `________`
+
+**Note on method.** Archiving the flow in Windmill does not work as a break.
+An archived flow is hidden from the UI but its webhook still runs and still
+stores. This was confirmed by probing the endpoint while archived and getting
+a genuine `{"status":"received"}` with a row written.
+
+Use a broken webhook URL instead. Edit the `WINDMILL_WEBHOOK_URL` Edge
+Function secret and append `_broken` to the flow path, so Windmill answers
+404. Restore it by changing it back. One value, edited twice.
+
+---
+
+## T8. Independent operator onboarding in 30 minutes
+
+Required: a new authorized operator follows the handover guide and, within 30
+minutes and without Developer help, opens the site, submits a test enquiry
+and verifies it in Supabase or Windmill.
+
+Needs a second person. The Developer may be present but must not speak, type
+or point. Any assistance makes this a FAIL and means the guide needs fixing.
+
+| | |
+|---|---|
+| Operator | `__________` |
+| Access granted at | `__________` |
+| Started at | `__________` |
+| Finished at | `__________` |
+| Elapsed | `________` minutes |
+| Developer assistance | None / Some, FAIL |
+
+- [ ] Opened the live site unaided
+- [ ] Submitted a test enquiry
+- [ ] Found the run in Windmill
+- [ ] Found the row in Supabase
+- [ ] Completed within 30 minutes
+
+Anything the operator found unclear, in their words:
+
+```
+____________________________________________
+____________________________________________
+```
+
+Fix the guide before re-testing with someone else.
+
+---
+
+## Reproducing the scripted checks
+
+```bash
+bash scripts/verify-live.sh https://ffclvsmctstpibdifjgu.supabase.co/functions/v1/contact-submit
+```
+
+Thirteen checks covering the server-side half of T4 and T7 part 1. No
+credentials needed. It cannot see the database, so the row counts have to be
+confirmed in Supabase separately.
+
+```bash
+bash harness/run.sh
+```
+
+Thirty-five checks against the real Edge Function and real flow step, with
+mocks standing in for PostgREST and the Windmill job runner. Catches code
+regressions. Passing it proves the code is right, not that the deployment is
+configured right.

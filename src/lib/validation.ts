@@ -1,5 +1,5 @@
 /**
- * Contact form validation rules — SOW section 5.1.
+ * Contact form validation rules. SOW section 5.1.
  *
  * This module is the client-side copy, used for immediate feedback in the
  * browser. The authoritative copy lives in the Supabase Edge Function

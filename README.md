@@ -1,30 +1,27 @@
-# WEB-001 — Sample Home Services, Demo
+# WEB-001, Sample Home Services demo
 
-A one-page demonstration business website, generated with open-source
-bolt.diy, published to GitHub Pages by GitHub Actions, with a working contact
-form that stores submissions through a Supabase Edge Function and a Windmill
-flow into PostgreSQL.
+A one page demonstration website built with bolt.diy, published to GitHub
+Pages by GitHub Actions, with a contact form that stores submissions through
+a Supabase Edge Function and a Windmill flow into PostgreSQL.
 
-**Demonstration only — no services offered.** No real customer data, ever.
+Demonstration only. No services are offered and no real customer data is
+involved.
 
 | | |
 |---|---|
 | Live site | https://milipatel3110.github.io/web-001-home-services-pilot/ |
 | Release A | `83f8386` |
 | Release B | `d5a5163` |
-| SOW | WEB-001, AI-First End-to-End Website Development |
 
----
+## Where to start
 
-## Start here
-
-- **Just want to check it works?** → [docs/OPERATOR_QUICKSTART.md](docs/OPERATOR_QUICKSTART.md), about 10 minutes
-- **Setting it up from empty accounts?** → [docs/SETUP.md](docs/SETUP.md)
-- **Taking ownership?** → [docs/HANDOVER.md](docs/HANDOVER.md)
-- **Verifying the delivery?** → [docs/TEST_LOG.md](docs/TEST_LOG.md)
-- **What is done and what is left?** → [docs/DELIVERY_STATUS.md](docs/DELIVERY_STATUS.md)
-
----
+| If you want to | Read |
+|---|---|
+| Check it works | [docs/OPERATOR_QUICKSTART.md](docs/OPERATOR_QUICKSTART.md), ten minutes |
+| Hand it in | [SUBMISSION.md](SUBMISSION.md) |
+| Build it from empty accounts | [docs/SETUP.md](docs/SETUP.md) |
+| Take ownership of it | [docs/HANDOVER.md](docs/HANDOVER.md) |
+| See the test results | [docs/TEST_LOG.md](docs/TEST_LOG.md) |
 
 ## How a submission travels
 
@@ -34,41 +31,47 @@ Browser ──▶ Supabase Edge Function ──▶ Windmill flow ──▶ Supab
             public, validates           private, sync      RLS, no policies
 ```
 
-The browser never talks to Windmill or to the database. It holds no
-credential and can reach exactly one endpoint. The visitor is told their
-enquiry was received only after Windmill confirms the row exists — an HTTP 200
-on its own is treated as a failure.
+Two things about this are worth knowing before you read the code.
 
-Each enquiry carries a `request_id` the browser generates and keeps across
-retries, so a submission retried after an outage is stored exactly once.
+The browser holds no credential. It can reach exactly one endpoint, and that
+endpoint cannot write to the database itself. Compromising the published site
+gets you nothing useful.
+
+Success is never assumed. The Edge Function treats an HTTP 200 without an
+explicit `{"stored": true}` as a failure, and tells the visitor nothing was
+saved. Each enquiry carries a `request_id` the browser generates and keeps
+across retries, so a submission retried after an outage is stored once rather
+than twice.
 
 ## Stack
 
-React 18 · TypeScript · Vite 5 · Tailwind CSS 3 · shadcn/ui components ·
-Supabase (PostgreSQL + Edge Functions, Deno) · Windmill · GitHub Actions ·
-GitHub Pages
+React 18, TypeScript, Vite 5, Tailwind CSS 3 and shadcn/ui components.
+Supabase for PostgreSQL and Edge Functions. Windmill for orchestration.
+GitHub Actions and GitHub Pages for build and hosting.
 
-No chatbot and no conversational UI: this is not a chat product (SOW section 2).
+No chatbot and no conversational UI. This is not a chat product, so
+assistant-ui is out of scope here.
 
 ## Layout
 
 ```
-.github/workflows/deploy.yml   build, check and publish — the only way to release
-src/                           the site
-  components/ContactForm.tsx   the form, request_id handling and retry behaviour
-  lib/validation.ts            validation rules (client copy)
+.github/workflows/deploy.yml   build, check and publish, the only way to release
+src/
+  components/ContactForm.tsx   the form, request_id handling, retry behaviour
+  lib/validation.ts            validation rules, client copy
   lib/validation.test.ts       24 boundary tests, run on every release
 supabase/
   migrations/                  table, constraints, RLS
-  functions/contact-submit/    public Edge Function (authoritative validation)
+  functions/contact-submit/    public Edge Function, authoritative validation
 windmill/
   contact_intake.ts            flow step, readable source
-  contact_intake.flow.json     importable export
+  contact_intake.flow.yaml     importable export with input bindings
+harness/                       local end to end test, 35 checks
+scripts/                       setup and verification helpers
 docs/                          setup, handover, test log, recording script
-scripts/sync-windmill-flow.mjs regenerates the flow export from the source
 ```
 
-## Local development
+## Running it locally
 
 ```bash
 npm ci
@@ -77,36 +80,42 @@ npm run dev
 ```
 
 ```bash
-npm run build       # typecheck + production build
+npm run build       # typecheck and production build
 npx vitest run      # validation tests
-npx tsc -b          # types only
+bash harness/run.sh # full chain against local mocks, 35 checks
 ```
+
+The harness runs the real frontend build, the real Edge Function under Deno
+and the real Windmill step, against mocks for PostgREST and the Windmill job
+runner. It catches regressions before you get anywhere near the live system.
+Passing it is necessary but not sufficient: it proves the code is right, not
+that the deployment is configured right.
 
 ## Deployment
 
-Push to `main`. That is the only path to the live site: no manual upload, no
-drag-and-drop, no bolt.diy one-click deploy. The workflow installs from the
-lockfile, typechecks, runs the tests, builds, refuses to publish if anything
-secret-shaped reached `dist/`, then deploys to Pages.
+Push to `main`. That is the only path to the live site. No manual upload, no
+drag and drop, no bolt.diy one click deploy.
 
-The Vite base path is derived from the repository name at build time, so
-renaming or forking the repository needs no code change.
+The workflow installs from the lockfile, typechecks, runs the tests, builds,
+refuses to publish if anything secret shaped reached the built output, then
+deploys to Pages. The Vite base path comes from the repository name at build
+time, so renaming or forking needs no code change.
 
 ## Secrets
 
-Nothing privileged is in this repository. `.env.example` lists the names and
+Nothing privileged is in this repository. `.env.example` lists names and
 shapes only.
 
 | Value | Lives in |
 |---|---|
-| `VITE_CONTACT_ENDPOINT` | GitHub Actions variable — public URL, no key |
+| `VITE_CONTACT_ENDPOINT` | GitHub Actions variable, a public URL with no key |
 | `ALLOWED_ORIGIN`, `WINDMILL_WEBHOOK_URL`, `WINDMILL_TOKEN` | Supabase Edge Function secrets |
-| Supabase `service_role` key | Windmill resource `f/web001/supabase_admin` |
+| Supabase service role key | A Windmill resource, and nowhere else |
 
-Rotation procedures: [docs/HANDOVER.md](docs/HANDOVER.md#5-credential-rotation-and-transfer).
+Rotation procedures are in
+[docs/HANDOVER.md](docs/HANDOVER.md#5-credential-rotation-and-transfer).
 
 ## Status
 
-GitHub Pages is temporary pilot hosting. The pilot stays available for at
-least 72 hours after handover. SAFI retains sole authority for final
-acceptance.
+GitHub Pages is temporary pilot hosting. The pilot stays up for at least 72
+hours after handover. SAFI decides acceptance.

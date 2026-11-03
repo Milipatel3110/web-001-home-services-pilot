@@ -9,9 +9,9 @@ value:
     value:
       type: rawscript
       language: bun
-      content: "/**\n * Windmill flow step — contact_intake / store_submission\n *\n * The single step of the synchronous\
-        \ `contact_intake` flow (SOW 5.2).\n * Triggered ONLY by the Supabase Edge Function, which authenticates with a\n\
-        \ * scoped bearer token. Nothing else may call it.\n *\n * Responsibilities:\n *   1. Write exactly one row to public.contact_submissions\
+      content: "/**\n * Windmill flow step, contact_intake / store_submission\n *\n * The single step of the synchronous `contact_intake`\
+        \ flow (SOW 5.2).\n * Triggered ONLY by the Supabase Edge Function, which authenticates with a\n * scoped bearer token.\
+        \ Nothing else may call it.\n *\n * Responsibilities:\n *   1. Write exactly one row to public.contact_submissions\
         \ using a server-side\n *      Supabase credential (service_role, which bypasses RLS).\n *   2. On a repeated request_id,\
         \ return the existing row and add no new row.\n *   3. Return an explicit { stored: true, request_id } so the Edge\
         \ Function can\n *      confirm storage rather than inferring it from an HTTP 200.\n *\n * The credential is read\
@@ -95,7 +95,7 @@ value:
 schema:
   $schema: https://json-schema.org/draft/2020-12/schema
   type: object
-  order: &id001
+  order:
   - request_id
   - name
   - email
@@ -117,4 +117,8 @@ schema:
       type: string
       description: Submitted message, 10-1000 characters.
       default: ''
-  required: *id001
+  required:
+  - request_id
+  - name
+  - email
+  - message

@@ -53,7 +53,7 @@ let passed = 0
 let failed = 0
 const check = (name, ok, detail = '') => {
   if (ok) { passed += 1; console.log(`  PASS  ${name}`) }
-  else { failed += 1; console.log(`  FAIL  ${name}${detail ? ` — ${detail}` : ''}`) }
+  else { failed += 1; console.log(`  FAIL  ${name}${detail ? `, ${detail}` : ''}`) }
 }
 
 const browser = await chromium.launch()
@@ -83,7 +83,7 @@ const successText = async () => {
 const failureVisible = async () => (await page.locator('text=Not submitted').count()) > 0
 
 // ---------------------------------------------------------------------------
-console.log('\nT3 — genuine browser submission reaches storage')
+console.log('\nT3, genuine browser submission reaches storage')
 // ---------------------------------------------------------------------------
 await fill('Demo Tester', 'demo@example.com', 'Recording the end to end walkthrough for handover.')
 await submit()
@@ -95,7 +95,7 @@ check('stored row matches the typed name', s.rows[0]?.name === 'Demo Tester', s.
 check('stored request_id matches the displayed reference', s.rows[0]?.request_id === ref1)
 
 // ---------------------------------------------------------------------------
-console.log('\nT5 — the browser holds no credential and reaches one endpoint only')
+console.log('\nT5, the browser holds no credential and reaches one endpoint only')
 // ---------------------------------------------------------------------------
 const outbound = requests.filter((r) => !r.url.startsWith('http://localhost:4173') && !r.url.includes('fonts.g'))
 check('only the Edge Function is called', outbound.every((r) => r.url.startsWith('http://127.0.0.1:8000')), outbound.map((r) => r.url).join(','))
@@ -103,7 +103,7 @@ check('no Authorization header is sent', outbound.every((r) => !r.headers.author
 check('no call to the database or Windmill', !outbound.some((r) => r.url.includes('54321') || r.url.includes('54322')))
 
 // ---------------------------------------------------------------------------
-console.log('\nT4 — invalid input is rejected and stores nothing')
+console.log('\nT4, invalid input is rejected and stores nothing')
 // ---------------------------------------------------------------------------
 const before = (await state()).count
 const cases = [
@@ -146,7 +146,7 @@ check('server rejects oversized body (413)', huge.status === 413, `status=${huge
 check('no rows added by any bypass attempt', (await state()).count === before, `count=${(await state()).count}`)
 
 // ---------------------------------------------------------------------------
-console.log('\nT7 part 1 — repeated request_id stores exactly one row')
+console.log('\nT7 part 1, repeated request_id stores exactly one row')
 // ---------------------------------------------------------------------------
 const rid = uuid()
 const dupPayload = { request_id: rid, name: 'Duplicate Test', email: 'dup@example.com', message: 'Sent three times with one request_id.', website: '' }
@@ -159,7 +159,7 @@ check('exactly one row for the repeated request_id', dupRows.length === 1, `rows
 check('the database was asked three times', s.insertCalls >= 3, `insertCalls=${s.insertCalls}`)
 
 // ---------------------------------------------------------------------------
-console.log('\nT7 part 2 — truthful failure, then retry without duplication')
+console.log('\nT7 part 2, truthful failure, then retry without duplication')
 // ---------------------------------------------------------------------------
 await page.reload({ waitUntil: 'networkidle' })
 await control('down')

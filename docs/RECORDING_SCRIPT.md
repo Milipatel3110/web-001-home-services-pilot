@@ -31,13 +31,13 @@ Speak or type-annotate as you go. Silent recordings are hard to follow.
 
 ## The take
 
-**0:00 — 0:20 · Version A is live**
+**0:00, 0:20 · Version A is live**
 
 Start on the live site. Show the URL bar clearly. Scroll slowly: hero, three
 cards, the "Demonstration only" notice. Narrow the window or open device
 emulation to show the mobile layout, then return to full width.
 
-**0:20 — 0:50 · Submit a real enquiry**
+**0:20, 0:50 · Submit a real enquiry**
 
 Scroll to the form. **Type** the test data by hand, visibly. Do not paste;
 pasting looks like seeded data and T3 exists specifically to rule that out.
@@ -51,19 +51,19 @@ Message  Recording the end to end walkthrough for handover.
 Press **Contact Us**. Wait for the green panel. Zoom in on the reference and
 read it aloud or highlight it.
 
-**0:50 — 1:10 · Windmill**
+**0:50, 1:10 · Windmill**
 
 Switch to the Windmill runs tab and refresh. Open the run at the top. Show
 the status is succeeded and the result contains `"stored": true` with the
 matching reference.
 
-**1:10 — 1:30 · Supabase**
+**1:10, 1:30 · Supabase**
 
 Switch to the table editor and refresh `contact_submissions`. The new row is
 at the top. Show the `request_id` matches, and the name, email and message are
 what you typed.
 
-**1:30 — 2:00 · The bolt.diy change**
+**1:30, 2:00 · The bolt.diy change**
 
 Switch to bolt.diy. Type the instruction in full, visibly:
 
@@ -72,7 +72,7 @@ Switch to bolt.diy. Type the instruction in full, visibly:
 
 Let it generate. Show the diff briefly, then commit and push.
 
-**2:00 — 2:35 · Release B deploys itself**
+**2:00, 2:35 · Release B deploys itself**
 
 Switch to the GitHub Actions tab. The new run is already going. Show it
 progressing through install, check, build and deploy, and reaching green. Say
@@ -80,9 +80,9 @@ the SHA aloud.
 
 If the run is slow, keep narrating what is happening. Do not stop recording.
 
-**2:35 — 3:00 · Same URL, updated, still working**
+**2:35, 3:00 · Same URL, updated, still working**
 
-Return to the live site tab and hard-refresh. **Same URL in the bar** — point
+Return to the live site tab and hard-refresh. **Same URL in the bar**, point
 at it. The Weekend Appointments callout is above the form and the button now
 reads **Request a Callback**.
 

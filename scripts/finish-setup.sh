@@ -18,7 +18,7 @@ set -euo pipefail
 # FILL THESE IN
 # ───────────────────────────────────────────────────────────────────────────
 
-# Supabase project ref — the subdomain in https://<ref>.supabase.co
+# Supabase project ref, the subdomain in https://<ref>.supabase.co
 SUPABASE_PROJECT_REF="ffclvsmctstpibdifjgu"
 
 # Windmill synchronous flow webhook. run_wait_result is what makes it
@@ -56,7 +56,7 @@ if [ -z "$WINDMILL_TOKEN" ]; then
   exit 1
 fi
 
-# The published origin — scheme and host only. No path, no trailing slash.
+# The published origin, scheme and host only. No path, no trailing slash.
 ALLOWED_ORIGIN="https://milipatel3110.github.io"
 
 # GitHub repository
@@ -114,14 +114,14 @@ if [ "$CODE" != "200" ]; then
   printf '%s\n' "$(printf '%s' "$SMOKE" | head -n-1)"
   echo
   echo "This is the function telling the truth, not a bug. Check, in order:"
-  echo "  1. Windmill > Runs — did a run appear? did it fail?"
-  echo "  2. The flow's Supabase resource — right url and service_role key?"
-  echo "  3. WINDMILL_WEBHOOK_URL — must contain run_wait_result"
+  echo "  1. Windmill > Runs, did a run appear? did it fail?"
+  echo "  2. The flow's Supabase resource, right url and service_role key?"
+  echo "  3. WINDMILL_WEBHOOK_URL, must contain run_wait_result"
   echo "  4. Supabase > Edge Functions > contact-submit > Logs"
   exit 1
 fi
 
-echo "    stored — request_id $RID"
+echo "    stored, request_id $RID"
 echo "    delete that row in Supabase once you have seen it"
 
 echo "==> Setting the GitHub Actions variable"
@@ -130,7 +130,7 @@ if command -v gh >/dev/null 2>&1; then
   echo "==> Re-running the deployment so the site picks it up"
   WID="$(gh api "repos/$GH_REPO/actions/workflows" --jq '.workflows[0].id')"
   gh api -X POST "repos/$GH_REPO/actions/workflows/$WID/dispatches" -f ref=main
-  echo "    dispatched — watch it with:  gh run watch --repo $GH_REPO"
+  echo "    dispatched, watch it with:  gh run watch --repo $GH_REPO"
 else
   echo "    gh not installed. Set it by hand instead:"
   echo "      https://github.com/$GH_REPO/settings/variables/actions"

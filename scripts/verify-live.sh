@@ -58,7 +58,7 @@ big() { printf 'x%.0s' $(seq 1 "$1"); }
 echo
 echo "Endpoint: $ENDPOINT"
 echo
-echo "T4 — invalid input is rejected server-side"
+echo "T4, invalid input is rejected server-side"
 
 post 400 "all fields blank" \
   "{\"request_id\":\"$(uuid)\",\"name\":\"\",\"email\":\"\",\"message\":\"\",\"website\":\"\"}"
@@ -91,7 +91,7 @@ post 413 "oversized body" \
   "{\"request_id\":\"$(uuid)\",\"name\":\"Big\",\"email\":\"a@example.com\",\"message\":\"$(big 20000)\",\"website\":\"\"}"
 
 echo
-echo "T7 part 1 — one request_id, sent three times"
+echo "T7 part 1, one request_id, sent three times"
 
 RID="$(uuid)"
 DUP="{\"request_id\":\"$RID\",\"name\":\"Duplicate Test\",\"email\":\"dup@example.com\",\"message\":\"Sent three times with one request_id.\",\"website\":\"\"}"

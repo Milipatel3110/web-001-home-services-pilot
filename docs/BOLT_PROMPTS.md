@@ -1,4 +1,4 @@
-# bolt.diy prompts — both versions
+# bolt.diy prompts, both versions
 
 Both code versions are produced with open-source
 [stackblitz-labs/bolt.diy](https://github.com/stackblitz-labs/bolt.diy), run
@@ -42,7 +42,7 @@ nothing to do with this repository's `.env.example`.
 >   buttons that scroll to the services and contact sections.
 > - Three service cards: "Small Repairs", "Furniture Assembly" and
 >   "Home Maintenance", each with a short description and three bullet points.
-> - A clearly visible notice reading exactly "Demonstration only — no services
+> - A clearly visible notice reading exactly "Demonstration only, no services
 >   offered", shown as a banner at the top of the page and repeated above the
 >   contact form.
 > - A contact form with Name, Email and Message fields and a submit button

@@ -39,10 +39,10 @@ jobs:
         # lockfile and package.json disagree, so the build is reproducible.
         run: npm ci
 
-      - name: Automated check — types
+      - name: Typecheck
         run: npx tsc -b
 
-      - name: Automated check — unit tests
+      - name: Unit tests
         # Validation rules are the part of the frontend that can silently rot,
         # so the boundary cases are asserted on every release.
         run: npx vitest run --reporter=verbose
@@ -55,8 +55,8 @@ jobs:
 
       - name: Build
         env:
-          # Public endpoint, no key attached — a repository variable, not a
-          # secret. Settings > Secrets and variables > Actions > Variables.
+          # Public endpoint with no key attached. A repository variable
+          # rather than a secret. Settings > Secrets and variables > Actions > Variables.
           VITE_CONTACT_ENDPOINT: ${{ vars.VITE_CONTACT_ENDPOINT }}
         run: npm run build
 
@@ -89,7 +89,7 @@ jobs:
           # someone having set Settings > Pages > Source to GitHub Actions.
           # Without this, the very first run fails with "Get Pages site
           # failed ... verify that the repository has Pages enabled", having
-          # built nothing — a settings mistake that looks like a code bug.
+          # built nothing. A settings mistake that reads as a code bug.
           enablement: true
 
       - name: Upload the built site

@@ -1,4 +1,4 @@
--- WEB-001 — contact intake storage
+-- WEB-001 contact intake storage
 -- SOW section 5.2: contact_submissions, RLS enabled, anonymous direct access denied.
 --
 -- Apply with either:

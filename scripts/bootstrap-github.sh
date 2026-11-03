@@ -138,7 +138,7 @@ fi
 cat <<EOF
 
 ────────────────────────────────────────────────────────────
-Release A — copy these into docs/TEST_LOG.md
+Release A, copy these into docs/TEST_LOG.md
 
   Live URL        https://$OWNER.github.io/$REPO_NAME/
   Release A SHA   $RELEASE_A_SHA
@@ -146,8 +146,8 @@ Release A — copy these into docs/TEST_LOG.md
 
 Next:
   1. Open the live URL and work through T1 and T2.
-  2. Set up Supabase and Windmill — docs/SETUP.md sections 2 to 4.
+  2. Set up Supabase and Windmill, docs/SETUP.md sections 2 to 4.
   3. Set VITE_CONTACT_ENDPOINT, re-run the workflow, then T3 to T5.
-  4. Generate version B in bolt.diy and push — docs/BOLT_PROMPTS.md.
+  4. Generate version B in bolt.diy and push, docs/BOLT_PROMPTS.md.
 ────────────────────────────────────────────────────────────
 EOF
