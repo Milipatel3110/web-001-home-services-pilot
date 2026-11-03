@@ -9,9 +9,9 @@ flow into PostgreSQL.
 
 | | |
 |---|---|
-| Live site | `https://______.github.io/______/` |
-| Release A | `________` |
-| Release B | `________` |
+| Live site | https://milipatel3110.github.io/web-001-home-services-pilot/ |
+| Release A | `83f8386` |
+| Release B | `d5a5163` |
 | SOW | WEB-001, AI-First End-to-End Website Development |
 
 ---

@@ -9,13 +9,13 @@ record it as FAIL, fix the cause, and run it again with a new date.
 
 | | |
 |---|---|
-| Tester | `__________` |
-| Date | `__________` |
-| Live URL | `https://__________.github.io/__________/` |
-| Release A SHA | `__________` |
-| Release A run | `__________` |
-| Release B SHA | `__________` |
-| Release B run | `__________` |
+| Tester | Automated by Claude (deployment only); live-browser tests outstanding |
+| Date | 2026-11-03 |
+| Live URL | https://milipatel3110.github.io/web-001-home-services-pilot/ |
+| Release A SHA | `83f83864f772008968e0609feb914b08ea125d0d` |
+| Release A run | https://github.com/Milipatel3110/web-001-home-services-pilot/actions/runs/41580364454 |
+| Release B SHA | `d5a516395880c55f89662e2e29c5f4b2f1cf4c59` |
+| Release B run | https://github.com/Milipatel3110/web-001-home-services-pilot/actions/runs/41580780291 |
 
 Evidence goes in `evidence/`, named `T1-...`, `T2-...` and so on. Redact
 submitted names, emails and message bodies in anything shared, and never
