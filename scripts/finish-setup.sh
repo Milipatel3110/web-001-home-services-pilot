@@ -25,7 +25,7 @@ SUPABASE_PROJECT_REF="ffclvsmctstpibdifjgu"
 # synchronous: it returns the flow's RESULT, not a job id. An async endpoint
 # would let the function claim success before anything was stored.
 #   https://<host>/api/w/<workspace>/jobs/run_wait_result/f/web001/contact_intake
-WINDMILL_WEBHOOK_URL="https://app.windmill.dev/api/w/REPLACE_WORKSPACE/jobs/run_wait_result/f/web001/contact_intake"
+WINDMILL_WEBHOOK_URL="https://app.windmill.dev/api/w/web001/jobs/run_wait_result/f/u/mili/contact_intake"
 
 # Windmill token, scoped to running that flow. Shown once when you create it.
 WINDMILL_TOKEN="REPLACE_ME"

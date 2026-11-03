@@ -122,8 +122,16 @@ in the code needs editing if you choose a different name.
 5. Build the synchronous webhook URL (value **C**):
 
    ```
-   https://<your-windmill-host>/api/w/<workspace>/jobs/run_wait_result/f/web001/contact_intake
+   https://<host>/api/w/<workspace>/jobs/run_wait_result/f/<flow-path>
    ```
+
+   The `/f/` is Windmill's marker for "this is a flow" (`/p/` means a script).
+   It is **not** a folder, so the flow's own path follows it in full — a flow
+   at `u/mili/contact_intake` gives `.../run_wait_result/f/u/mili/contact_intake`.
+
+   Easiest way to get it right: deploy the flow, open its **Triggers** node and
+   copy the webhook URL Windmill shows. Then check it says `run_wait_result`
+   and not `run` — Windmill offers both, and they are one word apart.
 
    `run_wait_result` is what makes the call synchronous: it returns the flow's
    result rather than a job id. An asynchronous endpoint would let the Edge
