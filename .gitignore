@@ -1,0 +1,36 @@
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Never commit real environment values. .env.example is the committed,
+# sanitized template; everything else stays out.
+.env
+.env.*
+!.env.example
+
+# Supabase CLI local state
+supabase/.branches/
+supabase/.temp/
+.supabase/
+
+# Windmill CLI local state
+.wmill/
+
+# Editor and OS noise
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.swp
+
+# Evidence captured during testing may contain screenshots of submitted data.
+# Redact before sharing, and keep raw captures out of the repository.
+evidence/raw/
+*.log
+
+# TypeScript incremental build state
+*.tsbuildinfo
+
+# Harness scratch output
+harness/.work/

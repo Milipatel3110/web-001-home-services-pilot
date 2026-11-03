@@ -1,0 +1,11 @@
+# Supabase project configuration — WEB-001
+#
+# project_id is the local CLI project name, not a secret.
+project_id = "web-001-home-services-demo"
+
+[functions.contact-submit]
+# Intentionally public (SOW 5.1): anonymous visitors must be able to submit the
+# contact form, so no JWT is required. The function compensates with full
+# server-side validation, a honeypot, a request-size cap, and by holding the
+# only database-capable credential outside the browser entirely.
+verify_jwt = false

@@ -1,0 +1,39 @@
+{
+  "name": "web-001-home-services-demo",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "WEB-001 demonstration one-page business website (Version A). React + TypeScript + Vite + Tailwind + shadcn/ui.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit false --emitDeclarationOnly false || tsc -b",
+    "check": "vitest run",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "lucide-react": "0.468.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "tailwind-merge": "2.5.5"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "@types/react": "18.3.17",
+    "@types/react-dom": "18.3.5",
+    "@vitejs/plugin-react": "4.3.4",
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.49",
+    "tailwindcss": "3.4.17",
+    "tailwindcss-animate": "1.0.7",
+    "typescript": "5.6.3",
+    "vite": "5.4.11",
+    "vitest": "2.1.8"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

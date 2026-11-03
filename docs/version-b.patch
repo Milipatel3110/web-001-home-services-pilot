@@ -1,0 +1,64 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index e8a25e7..6c16b61 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -3,6 +3,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
+ import { ContactForm } from '@/components/ContactForm'
+ import { Hero } from '@/components/Hero'
+ import { ServiceCards } from '@/components/ServiceCards'
++import { WeekendCallout } from '@/components/WeekendCallout'
+ 
+ export default function App() {
+   return (
+@@ -53,6 +54,8 @@ export default function App() {
+               </AlertDescription>
+             </Alert>
+ 
++            <WeekendCallout />
++
+             <div className="mt-8">
+               <ContactForm />
+             </div>
+diff --git a/src/components/ContactForm.tsx b/src/components/ContactForm.tsx
+index dccf8e7..f82fbd6 100644
+--- a/src/components/ContactForm.tsx
++++ b/src/components/ContactForm.tsx
+@@ -245,7 +245,7 @@ export function ContactForm() {
+ 
+         <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={submitting}>
+           {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
+-          {submitting ? 'Sending…' : 'Contact Us'}
++          {submitting ? 'Sending…' : 'Request a Callback'}
+         </Button>
+ 
+         <p className="text-xs text-muted-foreground">
+diff --git a/src/components/WeekendCallout.tsx b/src/components/WeekendCallout.tsx
+new file mode 100644
+index 0000000..e78bb23
+--- /dev/null
++++ b/src/components/WeekendCallout.tsx
+@@ -0,0 +1,24 @@
++import { CalendarClock } from 'lucide-react'
++
++/**
++ * Version B addition (SOW section 4). Sits directly above the contact form.
++ */
++export function WeekendCallout() {
++  return (
++    <div className="mx-auto mt-8 max-w-xl rounded-lg border border-primary/30 bg-primary/5 p-5">
++      <div className="flex gap-4">
++        <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
++          <CalendarClock className="h-5 w-5" aria-hidden="true" />
++        </span>
++        <div>
++          <h3 className="text-base font-semibold">Weekend Appointments</h3>
++          <p className="mt-1 text-sm text-muted-foreground">
++            Saturday and Sunday slots are available between 8am and 4pm. Mention
++            your preferred day in the message and we will call you back to
++            confirm.
++          </p>
++        </div>
++      </div>
++    </div>
++  )
++}
