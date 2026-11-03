@@ -282,6 +282,79 @@ ____________________________________________
 
 ---
 
+## Automated verification run — 2026-11-03
+
+Run against the deployed system from a clean machine, with no credentials
+of any kind. Reproduce with:
+
+```bash
+bash scripts/verify-live.sh https://ffclvsmctstpibdifjgu.supabase.co/functions/v1/contact-submit
+```
+
+### Live chain confirmed
+
+A submission to the public endpoint returned `{"status":"received"}` with a
+matching `request_id`, which the Edge Function only emits after Windmill
+confirms the row exists. Browser → Edge Function → Windmill → PostgreSQL is
+operating.
+
+### T1 — content served at the live URL
+
+Fetched `https://milipatel3110.github.io/web-001-home-services-pilot/` and its
+bundle. Present: "Sample Home Services", "Demonstration only", "Small Repairs",
+"Furniture Assembly", "Home Maintenance", "Weekend Appointments",
+"Request a Callback". The endpoint URL is compiled in; no secret-shaped value
+appears anywhere in the bundle.
+
+Still needed by hand: the mobile view, and that the form is operable in a real
+browser.
+
+### T4 — ten invalid submissions, all refused server-side
+
+| Case | Status |
+|---|---|
+| all fields blank | 400 |
+| name too short | 400 |
+| name too long (81) | 400 |
+| malformed email | 400 |
+| message too short | 400 |
+| message too long (1001) | 400 |
+| whitespace-only fields | 400 |
+| honeypot filled | 400 |
+| malformed request_id | 400 |
+| oversized body | 413 |
+
+These bypassed the browser form entirely, so they also prove the server does
+not merely trust the client. **Row count must be confirmed unchanged.**
+
+### T5 — direct table access denied
+
+| Probe | Result |
+|---|---|
+| Unauthenticated `GET /rest/v1/contact_submissions` | 401 |
+| Unauthenticated `POST /rest/v1/contact_submissions` | 401 |
+| Secrets in the published bundle | none found |
+
+**Incomplete:** these were sent with no key at all, so they prove the endpoint
+refuses anonymous callers but not that RLS denies a caller holding the
+publishable/anon key. Run the anon-key probe in T5 above to finish this.
+
+### T7 part 1 — one request_id, three times
+
+All three attempts returned `{"status":"received"}`. **The row count is the
+actual proof and must be confirmed in the database.**
+
+### What this run does NOT establish
+
+- Row counts, in either T4 or T7 — the script cannot see the database
+- T3, which requires a human typing into the live form; an API call is
+  explicitly not a substitute
+- T7 part 2, the outage and retry behaviour
+- T8, which needs a second person
+
+
+---
+
 ## Summary
 
 | ID | Result | Date | Evidence |
