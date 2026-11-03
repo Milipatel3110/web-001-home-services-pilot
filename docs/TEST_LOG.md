@@ -292,6 +292,20 @@ ____________________________________________
 
 Fix the guide before re-testing with someone else.
 
+### Evidence to capture
+
+The operator produces this, not the Developer:
+
+- `T8-operator-submission.png`, the green panel on their screen with the
+  reference visible
+- `T8-supabase-row.png`, the matching row they found in the table editor
+- `T8-timing.png` or a written note of start and finish times
+
+A screen recording of their 30 minutes is stronger than screenshots if they
+are willing, because it shows nobody intervened. Not required.
+
+The table above is the deliverable. The screenshots support it.
+
 ---
 
 ## Reproducing the scripted checks
