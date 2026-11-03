@@ -1,0 +1,27 @@
+WEB-001 T5 verification: RLS denies direct table access
+Run: 2026-11-03 08:03 UTC
+
+Each request below carries the project's PUBLISHABLE key, which is the
+key a browser would hold. The key itself is redacted in this transcript.
+RLS is enabled with no policies and anon has no table grants, so every
+verb is refused before any row is touched.
+
+--- GET ---
+{"code":"42501","details":null,"hint":"Grant the required privileges to the current role with: GRANT SELECT ON public.contact_submissions TO anon;","message":"permission denied for table contact_submissions"}
+HTTP 401
+
+--- POST ---
+{"code":"42501","details":null,"hint":"Grant the required privileges to the current role with: GRANT INSERT ON public.contact_submissions TO anon;","message":"permission denied for table contact_submissions"}
+HTTP 401
+
+--- PATCH ---
+{"code":"42501","details":null,"hint":"Grant the required privileges to the current role with: GRANT SELECT, UPDATE ON public.contact_submissions TO anon;","message":"permission denied for table contact_submissions"}
+HTTP 401
+
+--- DELETE ---
+{"code":"42501","details":null,"hint":"Grant the required privileges to the current role with: GRANT SELECT, DELETE ON public.contact_submissions TO anon;","message":"permission denied for table contact_submissions"}
+HTTP 401
+
+Expected and observed: all four refused. 42501 is PostgreSQL's
+insufficient_privilege. PostgREST's hint suggests granting privileges to
+anon, which is exactly what the migration revokes.

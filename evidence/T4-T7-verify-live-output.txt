@@ -1,0 +1,40 @@
+WEB-001 T4 and T7 server-side verification
+Run: 2026-11-03 08:03 UTC
+Endpoint: https://ffclvsmctstpibdifjgu.supabase.co/functions/v1/contact-submit
+Command: bash scripts/verify-live.sh <endpoint>
+
+
+Endpoint: https://ffclvsmctstpibdifjgu.supabase.co/functions/v1/contact-submit
+
+T4, invalid input is rejected server-side
+  PASS  all fields blank                               (400)
+  PASS  name too short                                 (400)
+  PASS  name too long (81)                             (400)
+  PASS  malformed email                                (400)
+  PASS  message too short                              (400)
+  PASS  message too long (1001)                        (400)
+  PASS  whitespace-only fields                         (400)
+  PASS  honeypot filled                                (400)
+  PASS  malformed request_id                           (400)
+  PASS  oversized body                                 (413)
+
+T7 part 1, one request_id, sent three times
+  PASS  attempt 1 accepted                             (200)
+  PASS  attempt 2 accepted                             (200)
+  PASS  attempt 3 accepted                             (200)
+
+────────────────────────────────────────────────────────────
+13 passed, 0 failed
+
+Now confirm in Supabase (the script cannot see your database):
+
+  select count(*) from contact_submissions
+   where request_id = 'eae951fd-ed21-462c-b815-79bfd592ebc4';
+  -- must return exactly 1
+
+  select count(*) from contact_submissions;
+  -- must be unchanged by the T4 cases above
+
+Then delete the duplicate-test row and record the results in
+docs/TEST_LOG.md. T3 still needs a human at the live form.
+────────────────────────────────────────────────────────────

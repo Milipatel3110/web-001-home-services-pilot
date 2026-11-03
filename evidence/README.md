@@ -2,6 +2,24 @@
 
 Captures backing the T1–T8 results in [../docs/TEST_LOG.md](../docs/TEST_LOG.md).
 
+## Already captured
+
+Machine-generated against the live system, so they need no redaction:
+
+| File | Covers |
+|---|---|
+| `T1-live-version-a-desktop.png` | Version A at 1440px, full page |
+| `T1-live-version-a-mobile.png` | Version A at 390px, single column, no sideways scrolling |
+| `T4-validation-errors.png` | Empty submission, all three fields flagged, nothing sent |
+| `T4-T7-verify-live-output.txt` | Ten server-side rejections, and one request_id sent three times |
+| `T5-rls-denied.txt` | SELECT, INSERT, UPDATE and DELETE all refused with 42501 |
+
+T2 and T6 are evidenced by their Actions run URLs in the test log. A permanent
+link to the run is better evidence than a screenshot of one.
+
+Still to capture by hand: T3, T6's visual check against version B, T7 part 2,
+and T8's two screenshots from the operator's own screen.
+
 ## Naming
 
 `T<n>-<short-description>.<ext>`, for example:
