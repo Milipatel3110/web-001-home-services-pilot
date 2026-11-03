@@ -183,6 +183,23 @@ in the code needs editing if you choose a different name.
 
 ## 5. GitHub — Actions and Pages
 
+### The quick way
+
+```bash
+gh auth status                                   # check WHICH account first
+bash scripts/bootstrap-github.sh web-001-home-services-demo
+```
+
+That creates the repository, pushes `main`, sets the Pages source to GitHub
+Actions, waits for the first run and prints the release A SHA and run URL
+ready for the test log. It asks for confirmation before creating anything, and
+shows you the account it is about to use.
+
+Pass the Edge Function URL as a second argument once Supabase exists, or set
+it later as shown below.
+
+### The manual way
+
 1. **Settings → Pages → Build and deployment → Source: GitHub Actions.**
    Not "Deploy from a branch". This is the setting that most often gets missed
    and it is why a workflow can go green while the old site stays live.
