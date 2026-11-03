@@ -18,6 +18,7 @@ involved.
 | If you want to | Read |
 |---|---|
 | Check it works | [docs/OPERATOR_QUICKSTART.md](docs/OPERATOR_QUICKSTART.md), ten minutes |
+| Present or demo it | [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) |
 | Hand it in | [SUBMISSION.md](SUBMISSION.md) |
 | Build it from empty accounts | [docs/SETUP.md](docs/SETUP.md) |
 | Take ownership of it | [docs/HANDOVER.md](docs/HANDOVER.md) |
