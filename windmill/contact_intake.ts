@@ -101,8 +101,17 @@ export async function main(
   const uuidRe =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
-  if (!uuidRe.test(String(request_id ?? ''))) {
-    throw new Error('Invalid request_id.')
+  // Trimmed before testing: a value typed into a multi-line form field can
+  // carry a trailing newline, and refusing a good UUID over invisible
+  // whitespace is a bad failure mode. The error names what it actually saw.
+  const trimmedRequestId = String(request_id ?? '').trim()
+
+  if (!uuidRe.test(trimmedRequestId)) {
+    throw new Error(
+      `Invalid request_id: received ${JSON.stringify(String(request_id ?? ''))} ` +
+        `(${trimmedRequestId.length} chars after trimming). ` +
+        `Expected a UUID in 8-4-4-4-12 form, e.g. 11111111-2222-4333-8444-555555555555.`,
+    )
   }
   if (trimmedName.length < 2 || trimmedName.length > 80) {
     throw new Error('Invalid name length.')
@@ -133,7 +142,7 @@ export async function main(
         Prefer: 'resolution=ignore-duplicates,return=representation',
       },
       body: JSON.stringify({
-        request_id,
+        request_id: trimmedRequestId,
         name: trimmedName,
         email: trimmedEmail,
         message: trimmedMessage,
@@ -163,7 +172,7 @@ export async function main(
 
   // ---- Duplicate: return the existing row, add nothing ---------------------
   const existingResponse = await fetch(
-    `${baseUrl}/rest/v1/${TABLE}?request_id=eq.${encodeURIComponent(request_id)}&select=request_id,created_at`,
+    `${baseUrl}/rest/v1/${TABLE}?request_id=eq.${encodeURIComponent(trimmedRequestId)}&select=request_id,created_at`,
     { method: 'GET', headers },
   )
 
