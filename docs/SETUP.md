@@ -201,8 +201,20 @@ it later as shown below.
 ### The manual way
 
 1. **Settings → Pages → Build and deployment → Source: GitHub Actions.**
-   Not "Deploy from a branch". This is the setting that most often gets missed
-   and it is why a workflow can go green while the old site stays live.
+   Not "Deploy from a branch".
+
+   The workflow passes `enablement: true` to `actions/configure-pages`, so it
+   switches this on by itself on the first run and you should not need to
+   touch it. Check it anyway if a run fails with:
+
+   ```
+   Get Pages site failed. Please verify that the repository has Pages enabled
+   and configured to build using GitHub Actions
+   ```
+
+   That error means Pages is off. It appears within about 15 seconds, before
+   anything is built, so it looks like a build failure when it is a settings
+   one.
 
 2. **Settings → Secrets and variables → Actions → Variables → New variable:**
 

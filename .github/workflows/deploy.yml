@@ -84,6 +84,13 @@ jobs:
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
+        with:
+          # Turn Pages on from the workflow itself rather than depending on
+          # someone having set Settings > Pages > Source to GitHub Actions.
+          # Without this, the very first run fails with "Get Pages site
+          # failed ... verify that the repository has Pages enabled", having
+          # built nothing — a settings mistake that looks like a code bug.
+          enablement: true
 
       - name: Upload the built site
         uses: actions/upload-pages-artifact@v3
