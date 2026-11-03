@@ -11,9 +11,9 @@ pilot without the Developer.
 |---|---|
 | Git repository | https://github.com/Milipatel3110/web-001-home-services-pilot |
 | Live site | https://milipatel3110.github.io/web-001-home-services-pilot/ |
-| Release A SHA | `83f83864f772008968e0609feb914b08ea125d0d` |
+| Release A SHA | `e14703c9a5be53185665119e2aa322a368b891a7` |
 | Release A Actions run | `________` |
-| Release B SHA | `d5a516395880c55f89662e2e29c5f4b2f1cf4c59` |
+| Release B SHA | `45af5a4231bd60c55843eb987a195497d76f7e47` |
 | Release B Actions run | `________` |
 | bolt.diy prompts | [BOLT_PROMPTS.md](./BOLT_PROMPTS.md) |
 | Generated frontend | `src/`, `index.html` |
