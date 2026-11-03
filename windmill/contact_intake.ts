@@ -21,10 +21,17 @@
  */
 import * as wmill from 'windmill-client'
 
-// Path of the Windmill resource holding the Supabase admin credential.
-// Create it in Windmill as described in docs/SETUP.md. Override per workspace
-// with the SUPABASE_RESOURCE_PATH variable if you use a different path.
-const RESOURCE_PATH = 'f/web001/supabase_admin'
+// Paths to look for the Windmill resource holding the Supabase admin
+// credential, tried in order. Windmill puts things under f/<folder>/ or
+// u/<user>/ depending on how they were created, and which one you get is a
+// detail of the UI rather than a decision anyone makes, so both are accepted.
+// Add your own path to the front of this list if it differs.
+const RESOURCE_PATHS = [
+  'f/web001/supabase_admin',
+  'u/mili/supabase_admin',
+  'f/web001/supabase',
+  'u/mili/supabase',
+]
 
 const TABLE = 'contact_submissions'
 
@@ -52,7 +59,21 @@ export async function main(
   created_at: string
 }> {
   // ---- Credential ----------------------------------------------------------
-  const resource = (await wmill.getResource(RESOURCE_PATH)) as SupabaseAdminResource
+  let resource: SupabaseAdminResource | undefined
+  let resourcePath = ''
+  for (const candidate of RESOURCE_PATHS) {
+    try {
+      const found = (await wmill.getResource(candidate)) as SupabaseAdminResource
+      if (found && (found.url || found.key)) {
+        resource = found
+        resourcePath = candidate
+        break
+      }
+    } catch {
+      // Not at this path. Try the next one.
+    }
+  }
+
   const baseUrl = (resource?.url ?? '').replace(/\/+$/, '')
   const serviceKey =
     resource?.service_role_key ?? resource?.serviceRoleKey ?? resource?.key ?? ''
@@ -60,9 +81,13 @@ export async function main(
   if (!baseUrl || !serviceKey) {
     // Thrown, not returned. A thrown error fails the Windmill job, the Edge
     // Function sees a non-success result, and the visitor is told truthfully
-    // that nothing was saved.
+    // that nothing was saved. The message names the paths tried, because a
+    // misplaced resource is the likeliest reason to land here.
     throw new Error(
-      `Supabase credential missing or incomplete at resource ${RESOURCE_PATH}.`,
+      resourcePath
+        ? `Supabase resource at ${resourcePath} is missing its url or key.`
+        : `No Supabase resource found. Looked in: ${RESOURCE_PATHS.join(', ')}. ` +
+          `Add your resource's path to RESOURCE_PATHS at the top of this script.`,
     )
   }
 
