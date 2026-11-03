@@ -27,6 +27,7 @@ import * as wmill from 'windmill-client'
 // detail of the UI rather than a decision anyone makes, so both are accepted.
 // Add your own path to the front of this list if it differs.
 const RESOURCE_PATHS = [
+  'u/mili/f/web001/supabase_admin',
   'f/web001/supabase_admin',
   'u/mili/supabase_admin',
   'f/web001/supabase',
