@@ -237,14 +237,22 @@ meaning it returned the existing row rather than inserting.
 
 ### Part 2, Windmill unavailable then restored
 
-Method used: `________`
+Method used: edited the `WINDMILL_WEBHOOK_URL` Edge Function secret to point
+at a flow path that does not exist, so Windmill answered 404. Restored by
+setting the secret back.
 
-- [ ] Submitted through the live browser form
-- [ ] No success message; the failure says nothing was saved
-- [ ] No new row created
-- [ ] The page kept the same `request_id`, no refresh
-- [ ] After restoring, the retry succeeded
+- [x] Submitted through the live browser form
+- [x] No success message; the failure said nothing was saved
+- [x] No new row created
+- [x] The page kept the same `request_id`, no refresh
+- [x] After restoring, the retry succeeded
 - [ ] Exactly one row exists for that `request_id`
+
+The visitor saw the truthful failure the Edge Function returns when Windmill
+cannot confirm storage:
+
+> We could not record your enquiry right now. Nothing has been saved. Please
+> try again in a moment.
 
 request_id: `________`  Final count: `________`
 
