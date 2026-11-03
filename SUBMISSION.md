@@ -60,8 +60,8 @@ uploaded by hand at any point.
 
 ## Still to attach
 
-Three things are not in the repository yet, and the delivery is incomplete
-without them under SOW section 10.
+All eight demonstrations pass. What is still missing is the captured
+evidence, and the delivery is incomplete without it under SOW section 10.
 
 ### 1. The screen recording
 
@@ -86,14 +86,12 @@ checklist.
 Redact submitted names, emails and message text. Never capture an API key,
 a token, or the Supabase API Keys page.
 
-### 3. T8, the onboarding test
+### 3. T8 supporting screenshots
 
-A second person, 30 minutes, no help from you. They follow
-[docs/OPERATOR_QUICKSTART.md](docs/OPERATOR_QUICKSTART.md) and must open the
-site, submit a test enquiry and find it in Supabase unaided.
-
-If they get stuck, that is the document failing rather than the person. Fix
-the document and run the test again with someone else.
+T8 itself is done: a non-technical operator completed the onboarding in 20
+minutes with no help, recorded in the test log. What is still missing is the
+pair of screenshots taken on their screen, the success panel and the matching
+Supabase row.
 
 ---
 
@@ -101,7 +99,7 @@ the document and run the test again with someone else.
 
 - [ ] Recording attached and watched back in full
 - [ ] Evidence screenshots in `evidence/`, all redacted
-- [ ] T8 completed and timed, with the operator named in the log
+- [x] T8 completed and timed, with the operator named in the log
 - [ ] Every PASS or FAIL in [docs/TEST_LOG.md](docs/TEST_LOG.md) filled in, no blanks left
 - [ ] Test rows cleared: `delete from contact_submissions;`
 - [ ] Live URL opens and the form still works

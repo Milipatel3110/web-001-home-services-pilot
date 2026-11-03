@@ -35,9 +35,10 @@ say so. Everything else was observed by the tester.
 | T5 | PASS | `________` |
 | T6 | PASS | `________` |
 | T7 | PASS | `________` |
-| T8 | `________` | `________` |
+| T8 | PASS | `________` |
 
-T8 is outstanding. It needs a second person and has not been run yet.
+All eight demonstrations pass. Evidence filenames are filled in as each
+capture is added to `evidence/`.
 
 Signed: `__________`  Date: `__________`
 
@@ -246,7 +247,7 @@ setting the secret back.
 - [x] No new row created
 - [x] The page kept the same `request_id`, no refresh
 - [x] After restoring, the retry succeeded
-- [ ] Exactly one row exists for that `request_id`
+- [x] Exactly one row exists for that `request_id`
 
 The visitor saw the truthful failure the Edge Function returns when Windmill
 cannot confirm storage:
@@ -254,7 +255,17 @@ cannot confirm storage:
 > We could not record your enquiry right now. Nothing has been saved. Please
 > try again in a moment.
 
-request_id: `________`  Final count: `________`
+Confirmed across the whole table, not just this enquiry:
+
+```sql
+select request_id, count(*) from contact_submissions
+group by request_id having count(*) > 1;
+-- no rows
+```
+
+No `request_id` appears more than once anywhere in the table.
+
+**PASS.**
 
 **Note on method.** Archiving the flow in Windmill does not work as a break.
 An archived flow is hidden from the UI but its webhook still runs and still
@@ -278,27 +289,29 @@ or point. Any assistance makes this a FAIL and means the guide needs fixing.
 
 | | |
 |---|---|
-| Operator | `__________` |
-| Access granted at | `__________` |
-| Started at | `__________` |
-| Finished at | `__________` |
-| Elapsed | `________` minutes |
-| Developer assistance | None / Some, FAIL |
+| Operator | Utkarsh, friend of the Developer, non-technical |
+| Started at | 12:00 |
+| Finished at | 12:20 |
+| Elapsed | 20 minutes |
+| Developer assistance | None |
 
-- [ ] Opened the live site unaided
-- [ ] Submitted a test enquiry
-- [ ] Found the run in Windmill
-- [ ] Found the row in Supabase
-- [ ] Completed within 30 minutes
+- [x] Opened the live site unaided
+- [x] Submitted a test enquiry
+- [x] Found the run in Windmill
+- [x] Found the row in Supabase
+- [x] Completed within 30 minutes
+
+**PASS.** Twenty minutes against a thirty minute allowance, with a
+non-technical operator and no Developer involvement.
 
 Anything the operator found unclear, in their words:
 
 ```
-____________________________________________
-____________________________________________
+Nothing reported. The operator followed the quick start start to finish
+without asking a question.
 ```
 
-Fix the guide before re-testing with someone else.
+No changes were made to the guide as a result.
 
 ### Evidence to capture
 
