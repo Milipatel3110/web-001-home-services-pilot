@@ -28,7 +28,33 @@ SUPABASE_PROJECT_REF="ffclvsmctstpibdifjgu"
 WINDMILL_WEBHOOK_URL="https://app.windmill.dev/api/w/web001/jobs/run_wait_result/f/u/mili/contact_intake"
 
 # Windmill token, scoped to running that flow. Shown once when you create it.
-WINDMILL_TOKEN="REPLACE_ME"
+#
+# Deliberately NOT written here. This file is tracked by Git, so a token typed
+# into it is one `git commit -a` away from being in the repository's history
+# forever. The script takes it from the environment, or from a gitignored
+# .env.local, or prompts for it without echoing:
+#
+#   WINDMILL_TOKEN=... bash scripts/finish-setup.sh     # environment
+#   echo 'WINDMILL_TOKEN=...' >> .env.local             # gitignored file
+#   bash scripts/finish-setup.sh                        # or just be prompted
+#
+WINDMILL_TOKEN="${WINDMILL_TOKEN:-}"
+
+if [ -z "$WINDMILL_TOKEN" ] && [ -f .env.local ]; then
+  # shellcheck disable=SC1091
+  WINDMILL_TOKEN="$(grep -E '^WINDMILL_TOKEN=' .env.local | head -1 | cut -d= -f2- | tr -d '"'"'"'' || true)"
+fi
+
+if [ -z "$WINDMILL_TOKEN" ]; then
+  printf 'Windmill token (input hidden): '
+  read -rs WINDMILL_TOKEN
+  printf '\n'
+fi
+
+if [ -z "$WINDMILL_TOKEN" ]; then
+  echo "error: no Windmill token supplied." >&2
+  exit 1
+fi
 
 # The published origin — scheme and host only. No path, no trailing slash.
 ALLOWED_ORIGIN="https://milipatel3110.github.io"
@@ -40,12 +66,17 @@ GH_REPO="Milipatel3110/web-001-home-services-pilot"
 
 ENDPOINT="https://${SUPABASE_PROJECT_REF}.supabase.co/functions/v1/contact-submit"
 
-for v in WINDMILL_WEBHOOK_URL WINDMILL_TOKEN; do
-  if [[ "${!v}" == *REPLACE* ]]; then
-    echo "error: $v still has a placeholder in it. Edit this file first." >&2
-    exit 1
-  fi
-done
+if [[ "$WINDMILL_WEBHOOK_URL" == *REPLACE* ]]; then
+  echo "error: WINDMILL_WEBHOOK_URL still has a placeholder in it." >&2
+  exit 1
+fi
+
+if [[ "$WINDMILL_WEBHOOK_URL" != *run_wait_result* ]]; then
+  echo "error: the webhook URL must be the SYNCHRONOUS one (run_wait_result)." >&2
+  echo "       An async 'jobs/run' endpoint returns a job id straight away, so" >&2
+  echo "       the function would report success before anything was stored." >&2
+  exit 1
+fi
 
 command -v supabase >/dev/null 2>&1 || {
   echo "The Supabase CLI is not installed. Install it with one of:" >&2
