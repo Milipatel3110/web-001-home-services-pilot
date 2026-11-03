@@ -245,7 +245,7 @@ export function ContactForm() {
 
         <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={submitting}>
           {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
-          {submitting ? 'Sending…' : 'Request a Callback'}
+          {submitting ? 'Sending…' : 'Contact Us'}
         </Button>
 
         <p className="text-xs text-muted-foreground">

@@ -3,7 +3,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ContactForm } from '@/components/ContactForm'
 import { Hero } from '@/components/Hero'
 import { ServiceCards } from '@/components/ServiceCards'
-import { WeekendCallout } from '@/components/WeekendCallout'
 
 export default function App() {
   return (
@@ -53,8 +52,6 @@ export default function App() {
                 </p>
               </AlertDescription>
             </Alert>
-
-            <WeekendCallout />
 
             <div className="mt-8">
               <ContactForm />
